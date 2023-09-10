@@ -5,7 +5,14 @@
 
 enum HTTP_SERVER_STATUS : bool
 {
+  /**
+   * @brief Server is stopped/notStarted
+   */
   STOPPED,
+
+  /**
+   * @brief Server is started/working
+   */
   STARTED
 };
 
@@ -14,23 +21,43 @@ class HttpServer
 public:
   HttpServer() {}
 
+  /**
+   * @brief Start the http server and add endpoint handlers
+   * @return esp_err_t ESP_OK if normal started
+   */
   esp_err_t Start()
   {
     return http_app_start();
   }
+
+  /**
+   * @brief Stop http server
+   * @return esp_err_t
+   */
   esp_err_t Stop()
   {
     return http_app_stop();
   }
 
-  virtual void ModifyConfig(httpd_config_t *config)
+  /**
+   * @brief change the default config
+   * @param config
+   */
+  virtual void Config(httpd_config_t *config)
   {
   }
 
+  /**
+   * @brief add http endpoint handlers
+   */
   virtual void RegisterUriHandlers()
   {
   }
 
+  /**
+   * @brief Get the Status
+   * @return HTTP_SERVER_STATUS
+   */
   HTTP_SERVER_STATUS GetStatus()
   {
     return status;
@@ -47,7 +74,7 @@ private:
     httpd_config_t config = HTTPD_DEFAULT_CONFIG();
     config.uri_match_fn = httpd_uri_match_wildcard;
 
-    ModifyConfig(&config);
+    Config(&config);
 
     esp_err_t err = httpd_start(&httpd_handle, &config);
 
