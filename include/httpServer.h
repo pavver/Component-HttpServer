@@ -72,6 +72,7 @@ private:
   esp_err_t http_app_start()
   {
     httpd_config_t config = HTTPD_DEFAULT_CONFIG();
+    config.max_uri_handlers = 10;
     config.uri_match_fn = httpd_uri_match_wildcard;
 
     Config(&config);
