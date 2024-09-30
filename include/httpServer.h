@@ -16,6 +16,23 @@ enum HTTP_SERVER_STATUS : bool
   STARTED
 };
 
+static esp_err_t options_handler(httpd_req_t *req)
+{
+  httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
+  httpd_resp_set_hdr(req, "Strict-Origin-When-Cross-Origin", "*");
+  httpd_resp_set_hdr(req, "Access-Control-Allow-Headers", "*");
+  httpd_resp_set_hdr(req, "Access-Control-Allow-Methods", "POST, OPTIONS");
+
+  httpd_resp_sendstr_chunk(req, NULL);
+
+  return ESP_OK;
+}
+
+static const httpd_uri_t http_server_options_request = {
+    .uri = "*",
+    .method = HTTP_OPTIONS,
+    .handler = options_handler}; 
+
 class HttpServer
 {
 public:
@@ -81,6 +98,7 @@ private:
 
     if (err == ESP_OK)
     {
+      httpd_register_uri_handler(httpd_handle, &http_server_options_request);
       RegisterUriHandlers();
       status = STARTED;
     }
