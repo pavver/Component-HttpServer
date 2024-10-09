@@ -28,10 +28,15 @@ static esp_err_t options_handler(httpd_req_t *req)
   return ESP_OK;
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+
 static const httpd_uri_t http_server_options_request = {
     .uri = "*",
     .method = HTTP_OPTIONS,
-    .handler = options_handler}; 
+    .handler = options_handler};
+
+#pragma GCC diagnostic pop
 
 class HttpServer
 {
